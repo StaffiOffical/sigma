@@ -8,7 +8,7 @@ scheduler = AsyncIOScheduler(timezone=pytz.utc)  # или pytz.timezone('Europe/
 # Вопросы (твои 20)
 questions = [
     {
-        "question": "Что делает тег <b>&lt;h1&gt;</b> в HTML?",
+        "question": "Что делает тег <h1> в HTML?",
         "options": ["Создаёт заголовок", "Создаёт таблицу", "Создаёт ссылку"],
         "answer": "Создаёт заголовок"
     },
@@ -38,7 +38,7 @@ questions = [
         "answer": "<br>"
     },
     {
-        "question": "Что делает тег <b>&lt;title&gt;</b>?",
+        "question": "Что делает тег <title>?",
         "options": ["Добавляет заголовок во вкладку", "Создаёт заголовок в тексте", "Добавляет подвал"],
         "answer": "Добавляет заголовок во вкладку"
     },
@@ -88,7 +88,7 @@ questions = [
         "answer": "background"
     },
     {
-        "question": "Какой CSS-селектор выбирает все элементы &lt;p&gt;?",
+        "question": "Какой CSS-селектор выбирает все элементы <p>?",
         "options": ["p", "#p", ".p"],
         "answer": "p"
     },
@@ -134,17 +134,15 @@ async def send_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
         q = qlist[i]
         reply_markup = ReplyKeyboardMarkup([q["options"]], one_time_keyboard=True, resize_keyboard=True)
         await update.message.reply_text(
-            f"<b>Вопрос {i+1} из {len(qlist)}:</b>\n{q['question']}",
-            reply_markup=reply_markup,
-            parse_mode="HTML"
+            f"Вопрос {i+1} из {len(qlist)}:\n{q['question']}",
+            reply_markup=reply_markup
         )
         context.user_data["answer"] = q["answer"]
     else:
         score = context.user_data["score"]
         await update.message.reply_text(
-            f"✅ Тест завершён!\n\nТы набрал: <b>{score} из {len(qlist)}</b> баллов!",
-            reply_markup=ReplyKeyboardRemove(),
-            parse_mode="HTML"
+            f"✅ Тест завершён!\n\nТы набрал: {score} из {len(qlist)} баллов!",
+            reply_markup=ReplyKeyboardRemove()
         )
         context.user_data["score"] = 0  # Сбрасываем счетчик, чтобы можно было начать снова
         context.user_data["current"] = 0  # Сбрасываем текущий индекс вопросов
@@ -158,7 +156,7 @@ async def check_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["score"] += 1
         await update.message.reply_text("✅ Правильно!")
     else:
-        await update.message.reply_text(f"❌ Неправильно. Правильный ответ: <b>{correct_answer}</b>", parse_mode="HTML")
+        await update.message.reply_text(f"❌ Неправильно. Правильный ответ: {correct_answer}")
 
     context.user_data["current"] += 1
     await send_question(update, context)
